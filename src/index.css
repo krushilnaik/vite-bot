@@ -1,0 +1,77 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+h1 {
+  font-size: 16px;
+  font-family: Segoe UI;
+  line-height: 20px;
+  color: whitesmoke;
+  display: table-cell;
+  padding: 13px 0px 0px 20px;
+}
+
+#heading {
+  background-color: black;
+  height: 50px;
+}
+
+.main {
+  margin: 18px;
+  border-radius: 4px;
+}
+
+div[role="form"] {
+  background-color: black;
+}
+
+#webchat {
+  position: fixed;
+  height: calc(100% - 50px);
+  width: 100%;
+  top: 50px;
+  overflow: hidden;
+}
+#heading {
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  height: 50px;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+}
+
+h1 {
+  font-size: 14px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #f3f2f1;
+  letter-spacing: 0.005em;
+  display: table-cell;
+  vertical-align: middle;
+  padding: 13px 0px 0px 20px;
+}
+
+#chatwindow {
+  height: 80%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+}
+
+#loginButton {
+  height: 100px;
+  width: 100%;
+  position: fixed;
+}
