@@ -17,8 +17,6 @@ body {
 }
 
 #root {
-  border-radius: 8px;
-  background-color: white;
   filter: drop-shadow(0 0 1px gray);
   position: relative;
 }
@@ -47,13 +45,14 @@ button {
 
 .webchat__send-box {
   position: sticky;
-  bottom: 0;
+  bottom: 33px;
+  background-color: white;
   padding: 8px;
 }
 
 .webchat__send-box__main {
-  border-radius: 5px;
   padding: 2px;
+  border-radius: 5px;
 }
 
 .webchat__suggested-action__text {
@@ -62,6 +61,16 @@ button {
 
 .webchat__suggested-actions__button {
   padding-inline: 10px !important;
+}
+
+.webchat__suggested-actions {
+  max-width: 70%;
+}
+
+.webchat__suggested-actions__flow-box,
+.webchat__suggested-actions__item-box {
+  padding-inline: 0 !important;
+  column-gap: 5px;
 }
 
 h1 {

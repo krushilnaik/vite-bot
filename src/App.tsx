@@ -1,6 +1,6 @@
 import { PublicClientApplication } from "@azure/msal-browser";
 import { createDirectLine, createStore, StyleOptions } from "botframework-webchat";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { exchangeTokenAsync, fetchJSON, getOAuthCardResourceUri } from "./lib";
 import ReactWebChat from "botframework-webchat";
 import { IconChevronUp, IconChevronDown, IconCpu } from "@tabler/icons-react";
@@ -22,6 +22,7 @@ function App(props: Props) {
   const { clientId, tenantId, tokenExchangeURL, botName } = props;
   const [token, setToken] = useState("");
   const [size, setSize] = useState<"none" | "half" | "full">("full");
+  const ref = useRef<HTMLDivElement>(null);
 
   let msalConfig = {
     auth: {
@@ -135,27 +136,32 @@ function App(props: Props) {
       bubbleBorderWidth: 0,
       rootWidth: 500,
       rootHeight: "100%",
+      accent: "#d93954",
       bubbleMaxWidth: 400,
       bubbleBorderRadius: 8,
-      botAvatarBackgroundColor: "red",
       botAvatarInitials: "CSC",
       bubbleFromUserBackground: "#d2d7e2",
       bubbleFromUserBorderRadius: 8,
       userAvatarBackgroundColor: "#415385",
+
+      // input box and send button
       sendBoxButtonColor: "white",
       sendBoxButtonShadeColor: "#d93954",
       sendBoxButtonShadeColorOnHover: "#f04864",
-      suggestedActionLayout: "flow",
-      suggestedActionBackgroundColor: "transparent",
-      suggestedActionBorderRadius: 4,
-      suggestedActionBorderWidth: 1,
-      suggestedActionHeight: "2em",
-      suggestedActionTextColor: "black",
       sendBoxBorderTop: "solid 1px lightgray",
       sendBoxBorderBottom: "solid 1px lightgray",
       sendBoxBorderLeft: "solid 1px lightgray",
       sendBoxBorderRight: "solid 1px lightgray",
       sendBoxButtonShadeBorderRadius: 8,
+
+      // quick replies
+      suggestedActionLayout: "flow",
+      suggestedActionBackgroundColor: "transparent",
+      suggestedActionBorderColor: "#a0a0a0",
+      suggestedActionBorderRadius: 4,
+      suggestedActionBorderWidth: 1,
+      suggestedActionHeight: "2em",
+      suggestedActionTextColor: "black",
     }),
     []
   );
@@ -176,6 +182,22 @@ function App(props: Props) {
     fetchJSON(tokenExchangeURL).then(({ token }) => setToken(token));
   };
 
+  // fix jittering caused by scrollbar render on minimize
+  useEffect(() => {
+    if (size !== "none") {
+      setTimeout(() => {
+        if (ref.current) {
+          ref.current.style.overflowY = "auto";
+        }
+      }, 200);
+    } else {
+      if (ref.current) {
+        ref.current.style.overflowY = "hidden";
+      }
+    }
+  }, [size]);
+
+  // SSO into to chatbot
   useEffect(() => {
     init();
   }, []);
@@ -188,11 +210,9 @@ function App(props: Props) {
         transition: "height linear 200ms",
         height: `${sizes[size]}rem`,
         maxHeight: "60vh",
-        borderRadius: "8px 8px 0 0",
-        overflowX: "hidden",
-        overflowY: size === "none" ? "hidden" : "auto",
       }}
     >
+      {/* header */}
       <div
         style={{
           display: "flex",
@@ -200,13 +220,13 @@ function App(props: Props) {
           top: 0,
           zIndex: 9999,
           backgroundColor: "#d93954",
+          borderRadius: "8px 8px 0 0",
           color: "white",
           justifyContent: "space-between",
           paddingInline: "16px",
         }}
       >
-        {/* header */}
-        <div style={{ height: "100%", display: "grid", gridTemplateColumns: "auto 1fr", gap: 8, alignItems: "center" }}>
+        <div style={{ height: "100%", display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
           <div
             style={{
               backgroundColor: "white",
@@ -235,9 +255,39 @@ function App(props: Props) {
       </div>
 
       {/* chat interface */}
-      {token && <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />}
-
-      {/* <span>AI generated content may be inaccurate and requires human review.</span> */}
+      <div
+        ref={ref}
+        style={{
+          backgroundColor: "white",
+          overflowX: "hidden",
+        }}
+      >
+        <div
+          style={{
+            paddingInline: "8px",
+            minHeight: "475px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "end",
+          }}
+        >
+          {token && <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />}
+        </div>
+        <div
+          style={{
+            backgroundColor: "white",
+            position: "sticky",
+            bottom: 0,
+            paddingInline: "16px",
+            paddingBlock: "0 16px",
+            fontSize: "12px",
+          }}
+        >
+          <span style={{ fontFamily: "Segoe UI" }}>
+            AI-generated content may be inaccurate and requires human review.
+          </span>
+        </div>
+      </div>
 
       {/* add bot name to timestamp of responses */}
       <style>
