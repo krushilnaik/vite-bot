@@ -224,7 +224,7 @@ function App(props: Props) {
               borderRadius: 9999,
             }}
           >
-            SC
+            ✨
           </div>
           <h1>{botName}</h1>
         </div>
