@@ -32,8 +32,8 @@ function App(props: Props) {
       authority: `https://login.microsoftonline.com/${tenantId}`,
     },
     cache: {
-      cacheLocation: "sessionStorage",
-      storeAuthStateInCookie: true,
+      cacheLocation: "localStorage",
+      storeAuthStateInCookie: false,
     },
   };
 
@@ -193,9 +193,13 @@ function App(props: Props) {
     <div
       style={{
         display: "grid",
+        position: "absolute",
+        bottom: 0,
+        right: 0,
         gridTemplateRows: `${sizes["none"]}rem 1fr`,
         transition: "height linear 200ms",
         height: `${sizes[size]}rem`,
+        width: "516px",
         filter: "drop-shadow(0 0 1px gray)",
         maxHeight: "60vh",
       }}
@@ -218,15 +222,13 @@ function App(props: Props) {
           <div
             style={{
               backgroundColor: "white",
-              display: "grid",
-              placeContent: "center",
               padding: 6,
               borderRadius: 9999,
             }}
           >
             ✨
           </div>
-          <h1>{botName}</h1>
+          <h1 id="botname">{botName}</h1>
         </div>
         <ul style={{ display: "flex", listStyle: "none", alignItems: "center", gap: 8 }}>
           <li>
@@ -294,6 +296,7 @@ function App(props: Props) {
           )}
         </div>
         <div
+          id="ai_disclaimer"
           style={{
             backgroundColor: "white",
             position: "sticky",

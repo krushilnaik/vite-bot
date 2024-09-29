@@ -1,29 +1,11 @@
-html,
-body {
-  height: 100%;
-  background-color: #141620;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  display: grid;
-  justify-content: end;
-  align-items: end;
-  padding: 16px;
-}
-
-button {
+#root button {
   cursor: pointer;
+  transition: background-color ease-out 300ms;
 }
 
 #root .nav_button {
-  transition: background-color ease-out 300ms;
+  /* transition: background-color ease-out 300ms; */
   background-color: transparent;
-  cursor: pointer;
   width: 35px;
   color: inherit;
   height: 35px;
@@ -35,12 +17,12 @@ button {
 }
 
 #root .nav_button:hover {
-  background-color: rgba(255, 255, 255, 0.205);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .webchat__send-box {
   position: sticky;
-  bottom: 33px;
+  bottom: 32px;
   background-color: white;
   padding: 8px;
 }
@@ -68,7 +50,7 @@ button {
   column-gap: 5px;
 }
 
-h1 {
+#botname {
   font-size: 16px;
   font-family: Segoe UI;
   font-weight: 600;
