@@ -16,11 +16,6 @@ body {
   padding: 16px;
 }
 
-#root {
-  filter: drop-shadow(0 0 1px gray);
-  position: relative;
-}
-
 button {
   cursor: pointer;
 }
@@ -78,4 +73,21 @@ h1 {
   font-family: Segoe UI;
   font-weight: 600;
   color: #f3f2f1;
+}
+
+.webchat__typing-indicator {
+  width: 75%;
+  height: 2px;
+  background-color: #d93954;
+  animation: left-right alternate infinite 400ms linear;
+}
+
+@keyframes left-right {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(30%);
+  }
 }

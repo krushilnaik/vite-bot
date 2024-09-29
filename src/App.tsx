@@ -1,9 +1,7 @@
 import { PublicClientApplication } from "@azure/msal-browser";
-import { createDirectLine, createStore, StyleOptions } from "botframework-webchat";
+import ReactWebChat, { createDirectLine, createStore, StyleOptions } from "botframework-webchat";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { exchangeTokenAsync, fetchJSON, getOAuthCardResourceUri } from "./lib";
-import ReactWebChat from "botframework-webchat";
-import { IconChevronUp, IconChevronDown, IconCpu } from "@tabler/icons-react";
 
 interface Props {
   clientId: string;
@@ -14,15 +12,19 @@ interface Props {
 
 const sizes = {
   none: 3.5,
-  half: 20,
+  half: 27,
   full: 50,
 };
 
 function App(props: Props) {
   const { clientId, tenantId, tokenExchangeURL, botName } = props;
+
   const [token, setToken] = useState("");
   const [size, setSize] = useState<"none" | "half" | "full">("full");
   const ref = useRef<HTMLDivElement>(null);
+
+  // this tracks the secondary button shown on the header
+  const [secondary, setSecondary] = useState<"min" | "max">("min");
 
   let msalConfig = {
     auth: {
@@ -103,25 +105,10 @@ function App(props: Props) {
                     }
                   );
                 return;
-              } else {
-                const temp = next(action);
-                console.log(temp);
-
-                return temp;
-              }
+              } else return next(action);
             });
-          } else {
-            const temp = next(action);
-            console.log(temp);
-
-            return temp;
-          }
-        } else {
-          const temp = next(action);
-          console.log(temp);
-
-          return temp;
-        }
+          } else return next(action);
+        } else return next(action);
       });
     }
 
@@ -209,6 +196,7 @@ function App(props: Props) {
         gridTemplateRows: `${sizes["none"]}rem 1fr`,
         transition: "height linear 200ms",
         height: `${sizes[size]}rem`,
+        filter: "drop-shadow(0 0 1px gray)",
         maxHeight: "60vh",
       }}
     >
@@ -236,19 +224,25 @@ function App(props: Props) {
               borderRadius: 9999,
             }}
           >
-            <IconCpu stroke={2} color="#d93954" />
+            SC
           </div>
           <h1>{botName}</h1>
         </div>
         <ul style={{ display: "flex", listStyle: "none", alignItems: "center", gap: 8 }}>
-          {/* <li>
-            <button onClick={() => setSize("full")} className="nav_button">
-              <IconArrowsMaximize stroke={2} />
+          <li>
+            <button
+              onClick={() => {
+                setSize(secondary === "max" ? "full" : "half");
+                setSecondary(secondary === "max" ? "min" : "max");
+              }}
+              className="nav_button"
+            >
+              {secondary}
             </button>
-          </li> */}
+          </li>
           <li>
             <button onClick={() => setSize(size === "none" ? "full" : "none")} className="nav_button">
-              {size === "none" ? <IconChevronUp stroke={2} /> : <IconChevronDown stroke={2} />}
+              {size === "none" ? "^" : "v"}
             </button>
           </li>
         </ul>
@@ -265,13 +259,39 @@ function App(props: Props) {
         <div
           style={{
             paddingInline: "8px",
-            minHeight: "475px",
+            minHeight: "calc(100% - 32px)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "end",
           }}
         >
-          {token && <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />}
+          {token && (
+            <ReactWebChat
+              directLine={directLine}
+              store={store}
+              styleOptions={styleOptions}
+              // customize bot "typing" indicator
+              sendTypingIndicator={true}
+              typingIndicatorMiddleware={() =>
+                (_next) =>
+                ({ activeTyping }) => {
+                  // @ts-ignore
+                  activeTyping = Object.values(activeTyping);
+
+                  if (activeTyping.length) {
+                    const { role } = activeTyping[0];
+
+                    if (role === "bot") {
+                      return <span className="webchat__typing-indicator"></span>;
+                    }
+                  } else {
+                    if (ref.current) {
+                      ref.current.scrollTop = ref.current.scrollHeight;
+                    }
+                  }
+                }}
+            />
+          )}
         </div>
         <div
           style={{
